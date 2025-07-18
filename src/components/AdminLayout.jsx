@@ -6,12 +6,11 @@ const AdminLayout = ({ breadcrumbs, children }) => {
   return (
     <div className="relative md:flex min-h-screen bg-[#D6D6D6]">
       <Sidebar />
-
       {/* Main Content Area (Sidebar ke bagal wala) */}
       <div className="flex-1 flex flex-col">
         
         {/* Top Header Bar (Dark wala) */}
-        <header className="bg-[#393F36] text-white p-4 flex justify-between items-center shadow-md z-10">
+        <header className="hidden bg-[#393F36]  text-white p-4 md:flex justify-between items-center shadow-md z-10">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold">Administrator Panel</h1>
           </div>
@@ -22,7 +21,7 @@ const AdminLayout = ({ breadcrumbs, children }) => {
         
         {/* Breadcrumb Bar (Halka grey wala) */}
         <div className="bg-[#D6D6D6] px-6 py-3">
-            <p className="text-sm font-semibold text-black">
+            <p className="text-sm font-semibold text-black ">
                 {breadcrumbs.map((crumb, index) => (
                     <span key={index}>
                         {/* Agar link hai to 'a' tag, warna simple text */}
