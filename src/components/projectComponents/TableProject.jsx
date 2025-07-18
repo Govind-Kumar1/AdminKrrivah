@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, X } from "lucide-react";
-// import {
-//   fetchProjects,
-//   deleteProject,
-//   addProject,
-//   updateProject,
-// } from "../api/projectAPI";
+import { Link, Pencil, X } from "lucide-react";
+import { Navigate } from "react-router-dom";
 
 export default function ManageProjects() {
   const [projects, setProjects] = useState([
@@ -45,6 +40,7 @@ export default function ManageProjects() {
 
   const handleAdd = async () => {
     try {
+      <Link></Link>
     } catch (error) {}
   };
 
@@ -55,7 +51,7 @@ export default function ManageProjects() {
         <h2 className="text-base font-medium">Manage Projects</h2>
         <button
           className="flex items-center gap-2 bg-[#FFFFFF] text-sm border px-4 py-1 text-[#393F36] hover:bg-gray-100"
-          onClick={() => setShowAddModal(true)}
+          onClick={() => Navigate('/admin/') }
         >
           <span className="text-xl font-medium">+</span>
           Add New Record

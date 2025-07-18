@@ -31,11 +31,13 @@ const Sidebar = () => {
   return (
     <>
       {/* Hamburger menu (mobile only) */}
-      <div className="md:hidden p-4 flex items-center justify-between">
-        <img src={logo} alt="logo" className="h-8" />
-        <button onClick={() => setOpenMobile(true)}>
+      <div className="bg-[#393F36] md:hidden p-4 flex item space-x-4">
+        <button onClick={() => setOpenMobile(true)} className="text-white">
           <Menu size={28} />
         </button>
+        <div className="text-white text-lg font-medium">
+          Administrator Panel
+        </div>
       </div>
 
       {/* Sidebar (desktop or mobile full screen) */}
