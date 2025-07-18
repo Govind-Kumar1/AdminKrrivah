@@ -1,16 +1,21 @@
-import React from "react";
-import ManageContacts from "../components/ManageContacts.jsx"; // Sahi path dein
-import Sidebar from "../components/Sidebar.jsx"; // Sahi path dein
+import React from 'react';
+import AdminLayout from '../components/AdminLayout'; // Sahi path dein
+import ManageContacts from '../components/ManageContacts'; // Sahi path dein
 
 const ContactPage = () => {
-  return (
-    <div className="relative md:flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8">
-        <ManageContacts />
-      </main>
-    </div>
-  );
+    // Contact page ke liye breadcrumbs
+    const breadcrumbs = [
+        { name: "Home", link: "/admin" },
+        { name: "Contact" }
+    ];
+
+    return (
+        // AdminLayout ko use karein aur breadcrumbs pass karein
+        <AdminLayout breadcrumbs={breadcrumbs}>
+            {/* Page ka content (ManageContacts table) yahan ayega */}
+            <ManageContacts />
+        </AdminLayout>
+    );
 };
 
-export default ContactPage; 
+export default ContactPage;

@@ -1,16 +1,21 @@
-import React from "react";
-import ManageBlogs from "../components/ManageBlogs.jsx"; // Sahi path dein
-import Sidebar from "../components/Sidebar.jsx";       // Sahi path dein
+import React from 'react';
+import AdminLayout from '../components/AdminLayout'; // Layout component import karein
+import ManageBlogs from '../components/ManageBlogs'; // Blog ka content import karein
 
 const BlogPage = () => {
-  return (
-    <div className="relative md:flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8">
-        <ManageBlogs />
-      </main>
-    </div>
-  );
+    // Is page ke liye breadcrumbs define karein
+    const breadcrumbs = [
+        { name: "Home", link: "/admin" },
+        { name: "Blogs" }
+    ];
+
+    return (
+        // AdminLayout ko use karein aur breadcrumbs pass karein
+        <AdminLayout breadcrumbs={breadcrumbs}>
+            {/* Beech mein page ka content daal dein */}
+            <ManageBlogs />
+        </AdminLayout>
+    );
 };
 
 export default BlogPage;
