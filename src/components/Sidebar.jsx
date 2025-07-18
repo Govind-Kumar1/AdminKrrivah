@@ -43,7 +43,8 @@ const Sidebar = () => {
       {/* Sidebar (desktop or mobile full screen) */}
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-white border-r z-40 transition-transform duration-300 
-        ${
+        min-h-screen
+          ${
           openMobile ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:relative md:block`}
       >
