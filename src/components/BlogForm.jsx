@@ -9,11 +9,11 @@ const BlogForm = ({ onSave, onClose }) => {
     shortDescription: '',
     context: '',
     blogThumbnail: null,
-    mainImage: null,
+    mainImage: null, 
   };
 
   const [formData, setFormData] = useState(initialFormState);
-
+ 
   // Form me kuch bhi change hone par state update karega
   const handleChange = (e) => {
     const { name, value, files } = e.target;
