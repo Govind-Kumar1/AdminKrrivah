@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Menu, Plus, X } from "lucide-react";
 import logo from "/Logo.png"; // adjust path as needed
+import { LogOut } from 'lucide-react';
 import { useLocation, useNavigate, Link } from "react-router-dom"; // Link ko yahan import kiya hai
 
 const Sidebar = () => {
@@ -31,13 +32,18 @@ const Sidebar = () => {
   return (
     <>
       {/* Hamburger menu (mobile only) */}
-      <div className="bg-[#393F36] md:hidden p-4 flex item space-x-4">
-        <button onClick={() => setOpenMobile(true)} className="text-white">
+      <div className="bg-[#393F36] md:hidden p-4 flex justify-between space-x-4">
+        <div className="flex space-x-4">
+          <button onClick={() => setOpenMobile(true)} className="text-white">
           <Menu size={28} />
         </button>
         <div className="text-white text-lg font-medium">
           Administrator Panel
         </div>
+        </div>
+        <button title="Logout" className="hover:text-red-400 text-white">
+            <LogOut size={22} />
+          </button>
       </div>
 
       {/* Sidebar (desktop or mobile full screen) */}
