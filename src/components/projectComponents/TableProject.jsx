@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function ManageProjects() {
   const [projects, setProjects] = useState([
-    { id: 123456789, title: "PROJECT TITLE", content: "SHORT DESCRIPTION" },
-    { id: 234567891, title: "PROJECT TITLE", content: "SHORT DESCRIPTION" },
-    { id: 345678912, title: "PROJECT TITLE", content: "SHORT DESCRIPTION" },
-    { id: 456789123, title: "PROJECT TITLE", content: "SHORT DESCRIPTION" },
+    { id: 123456789, title: "PROJECT TITLE", content: "SHORT DESCRIPTION", isActive: true },
+    { id: 234567891, title: "PROJECT TITLE", content: "SHORT DESCRIPTION", isActive: false },
+    { id: 345678912, title: "PROJECT TITLE", content: "SHORT DESCRIPTION", isActive: true },
+    { id: 456789123, title: "PROJECT TITLE", content: "SHORT DESCRIPTION", isActive: false },
   ]);
   const [loading, setLoading] = useState(true);
 
@@ -19,22 +19,29 @@ export default function ManageProjects() {
 
   const loadProjects = async () => {
     try {
-      // const res = await fetchProjects(); // API call
-      // setProjects(res.data);
-      setLoading(false);
+      setTimeout(() => {
+          setLoading(false);
+      }, 500);
     } catch (err) {
       console.error("Error fetching projects", err);
       setLoading(false);
     }
-  };
+  }; 
 
   const handleDelete = async (id) => {
     try {
-      // await deleteProject(id); // API call
       setProjects((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
       console.error("Delete failed", err);
     }
+  };
+  
+  const handleToggleStatus = (id) => {
+    setProjects((prevProjects) => 
+      prevProjects.map((p) =>
+        p.id === id ? { ...p, isActive: !p.isActive } : p
+      )
+    );
   };
 
   return (
@@ -78,10 +85,14 @@ export default function ManageProjects() {
                   <td className="p-3 border-r border-gray-200">THUMBNAIL</td>
                   <td className="p-3 border-r border-gray-200">MM/DD/YYYY TIME</td>
                   <td className="p-3 border-r border-gray-200">
-                    <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" />
-                      <div className="w-10 h-5 bg-gray-300 rounded-full peer peer-checked:bg-green-500" />
-                    </label>
+                    {/* 👇 Updated Active Status with Toggle Switch */}
+                    <button
+                        onClick={() => handleToggleStatus(p.id)}
+                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 focus:outline-none ${p.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
+                        title={p.isActive ? 'Active' : 'Inactive'}
+                    >
+                        <span className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${p.isActive ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
                   </td>
                   <td className="p-3 border-r border-gray-200">
                     <button onClick={() => alert("Edit flow here")}>
