@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 
 const StatisticsForm = ({ mode, item, onCancel, onSubmit }) => {
   const [form, setForm] = useState({
-    number: "",
+    unit: "",
     description: "",
   });
 
   useEffect(() => {
     if (mode === "edit" && item) {
       setForm({
-        number: item.number || "",
+        unit: item.unit || "",
         description: item.description || "",
       });
     } else {
-      setForm({ number: "", description: "" });
+      setForm({ unit: "", description: "" });
     }
   }, [mode, item]);
 
@@ -30,15 +30,16 @@ const StatisticsForm = ({ mode, item, onCancel, onSubmit }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-3 gap-4 items-center">
-        <label htmlFor="number" className="text-right font-medium">
+        
+        <label htmlFor="unit" className="text-right font-medium">
           Number
         </label>
         <input
           type="text"
-          id="number"
-          name="number"
+          id="unit"
+          name="unit"
           className="col-span-2 border rounded px-3 py-2 w-full"
-          value={form.number}
+          value={form.unit}
           onChange={handleChange}
         />
 

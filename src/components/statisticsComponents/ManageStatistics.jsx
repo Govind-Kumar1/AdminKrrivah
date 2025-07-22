@@ -1,27 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Pencil, X, Plus } from "lucide-react";
 import StatisticsForm from "./StatisticsForm";
-
-const initialData = [
-  { id: "123456789", number: "number", description: "one liner" },
-  { id: "234567891", number: "number", description: "one liner" },
-  { id: "345678912", number: "number", description: "one liner" },
-  { id: "456789123", number: "number", description: "one liner" },
-];
+const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const ManageStatistics = () => {
-  const [mode, setMode] = useState("table"); // table | add | edit
-  const [data, setData] = useState(initialData);
+  const [mode, setMode] = useState("table");
+  const [data, setData] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(`${api_url}/api/stat`);
+      setData(res.data.data || []);
+      console.log("Fetched stats:", res.data.data);
+    } catch (error) {
+      console.error("Failed to fetch stats", error);
+    }
+  };
 
   const handleEdit = (item) => {
     setEditingItem(item);
     setMode("edit");
   };
 
-  const handleDelete = (id) => {
-    console.log("API call to delete:", id);
-    setData((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${api_url}/api/stat/${id}`, {
+        withCredentials: true,
+      });
+      fetchData();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -29,11 +45,34 @@ const ManageStatistics = () => {
     setEditingItem(null);
   };
 
+  const handleSubmit = async (formData) => {
+    try {
+      if (mode === "edit") {
+        await axios.put(
+          `${api_url}/api/stat/update/${editingItem.id}`,
+          formData,
+          {
+            withCredentials: true,
+          }
+        );
+      } else {
+        await axios.post(`${api_url}/api/stat/create`, formData, {
+          withCredentials: true,
+        });
+      }
+
+      fetchData();
+      setMode("table");
+      setEditingItem(null);
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
+  };
+
   return (
-    <div className="bg-[#D6D6D6] flex justify-center p-4 ">
-      <div className="w-full max-w-6xl rounded-md shadow-lg overflow-hidden bg-white ">
-        {/* Header */}
-        <div className="bg-[#383D34] text-white flex justify-between items-center px-6 py-4">
+    <div className="bg-[#D6D6D6] flex justify-center">
+      <div className="w-full max-w-6xl rounded-md shadow-lg overflow-hidden bg-white">
+        <div className="bg-[#383D34] text-white flex justify-between items-center px-6 py-2">
           <h2 className="text-lg font-medium">Manage Statistics</h2>
           {mode === "table" && (
             <button
@@ -45,13 +84,12 @@ const ManageStatistics = () => {
           )}
         </div>
 
-        {/* Conditional rendering based on mode */}
-        <div className="p-6">
+        <div className="">
           {mode === "table" && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-100 text-sm text-gray-700">
+            <div className="overflow-x-auto border border-t-0 rounded-b-lg">
+              <table className="w-full text-sm">
+                <thead className="bg-white">
+                  <tr className="text-left text-black">
                     <th className="border p-3 font-semibold">Id</th>
                     <th className="border p-3 font-semibold">
                       Statistics Number
@@ -63,12 +101,16 @@ const ManageStatistics = () => {
                     <th className="border p-3 font-semibold">Delete</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {data.map((stat, index) => (
-                    <tr key={index} className="hover:bg-gray-50 text-sm">
-                      <td className="border p-3">{stat.id}</td>
-                      <td className="border p-3">{stat.number}</td>
-                      <td className="border p-3">{stat.description}</td>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {data.map((stat) => (
+                    <tr key={stat.id}>
+                      <td className="border p-3 text-gray-600">{stat.id}</td>
+                      <td className="border p-3 text-gray-700">
+                        {stat.unit || "-"}
+                      </td>
+                      <td className="border p-3 text-gray-700">
+                        {stat.description}
+                      </td>
                       <td className="border p-3 text-center">
                         <button
                           onClick={() => handleEdit(stat)}
@@ -92,36 +134,12 @@ const ManageStatistics = () => {
             </div>
           )}
 
-          {mode === "edit" && editingItem && (
+          {(mode === "edit" || mode === "add") && (
             <StatisticsForm
-              mode="edit"
+              mode={mode}
               item={editingItem}
               onCancel={handleCancel}
-              onSubmit={(updatedForm) => {
-                console.log("Updated data:", updatedForm);
-                setData((prev) =>
-                  prev.map((d) =>
-                    d.id === editingItem.id ? { ...d, ...updatedForm } : d
-                  )
-                );
-                setMode("table");
-              }}
-            />
-          )}
-
-          {mode === "add" && (
-            <StatisticsForm
-              mode="add"
-              onCancel={handleCancel}
-              onSubmit={(newForm) => {
-                console.log("New data:", newForm);
-                const newItem = {
-                  id: Date.now().toString(),
-                  ...newForm,
-                };
-                setData((prev) => [...prev, newItem]);
-                setMode("table");
-              }}
+              onSubmit={handleSubmit}
             />
           )}
         </div>
