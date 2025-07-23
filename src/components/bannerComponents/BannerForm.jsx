@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
-    brandName: "",
+    brand: "",
     title: "",
     description: "",
     image: null,
@@ -11,7 +11,7 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   useEffect(() => {
     if (mode === "edit" && item) {
       setFormData({
-        brandName: item.brandName || "",
+        brand: item.brand || "",
         title: item.title || "",
         description: item.description || "",
         image: null, // Don't prefill file
@@ -38,8 +38,8 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         <label className="block font-medium">Brand Name</label>
         <input
           type="text"
-          name="brandName"
-          value={formData.brandName}
+          name="brand"
+          value={formData.brand}
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded"
         />

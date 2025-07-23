@@ -127,7 +127,7 @@ const ManageBanners = () => {
                                 <tbody>
                                     {data.map((item) => (
                                         <tr key={item._id} className="hover:bg-gray-50 text-sm">
-                                            <td className="border p-3">{item.brandName}</td>
+                                            <td className="border p-3">{item.brand}</td>
                                             <td className="border p-3">
                                                 <img src={item.image} alt={item.title} className="w-24 h-auto object-cover" />
                                             </td>
