@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Pencil, X, Plus } from "lucide-react";
+import {  Plus } from "lucide-react";
+import { FiEdit,FiXSquare } from "react-icons/fi";
+
 import BannerForm from "./BannerForm"; // Your form component
 import axios from "axios";
 // const API_URL
@@ -175,7 +177,7 @@ const ManageBanners = () => {
                           }}
                           className="hover:text-blue-600"
                         >
-                          <Pencil className="w-5 h-5" />
+                          <FiEdit className='text-black w-5 h-5' size={22} />
                         </button>
                       </td>
                       <td className="border p-3 text-center">
@@ -183,7 +185,7 @@ const ManageBanners = () => {
                           onClick={() => handleDelete(item.id)}
                           className="hover:text-red-600"
                         >
-                          <X className="w-5 h-5" />
+                          <FiXSquare className='text-black' size={22} />
                         </button>
                       </td>
                     </tr>

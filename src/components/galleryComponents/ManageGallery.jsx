@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, X, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import GalleryForm from "./GalleryForm";
 import axios from "axios";
+import { FiEdit, FiXSquare } from "react-icons/fi";
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const initialData = [
@@ -75,7 +76,7 @@ const ManageGallery = () => {
   const handleToggleActive = async (item) => {
     try {
       console.log(item);
-      
+
       const updatedIsActive = !item.isActive;
 
       await axios.put(
@@ -152,11 +153,18 @@ const ManageGallery = () => {
                         />
                       </td>
                       <td className="border p-3 text-center">
-                        <input
-                          type="checkbox"
-                          checked={item.isActive}
-                          onChange={() => handleToggleActive(item)}
-                        />
+                        <button
+                          onClick={() => handleToggleActive(item)}
+                          className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${
+                            item.isActive ? "bg-blue-500" : "bg-gray-400"
+                          }`}
+                        >
+                          <span
+                            className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${
+                              item.isActive ? "translate-x-6" : "translate-x-1"
+                            }`}
+                          />
+                        </button>
                       </td>
                       <td className="border p-3 text-center">
                         <button
@@ -167,7 +175,7 @@ const ManageGallery = () => {
                           }}
                           className="hover:text-blue-600"
                         >
-                          <Pencil className="w-5 h-5" />
+                          <FiEdit className="text-black w-5 h-5" size={22} />
                         </button>
                       </td>
                       <td className="border p-3 text-center">
@@ -175,7 +183,7 @@ const ManageGallery = () => {
                           onClick={() => handleDelete(item.id)}
                           className="hover:text-red-600"
                         >
-                          <X className="w-5 h-5" />
+                          <FiXSquare className="text-black" size={22} />
                         </button>
                       </td>
                     </tr>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Pencil, X, Plus } from "lucide-react";
+import {  Plus } from "lucide-react";
+import { FiEdit,FiXSquare } from "react-icons/fi";
+
 import StatisticsForm from "./StatisticsForm";
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -116,7 +118,7 @@ const ManageStatistics = () => {
                           onClick={() => handleEdit(stat)}
                           className="hover:text-blue-600"
                         >
-                          <Pencil className="w-5 h-5" />
+                          <FiEdit className='text-black w-5 h-5' size={22} />
                         </button>
                       </td>
                       <td className="border p-3 text-center">
@@ -124,7 +126,7 @@ const ManageStatistics = () => {
                           onClick={() => handleDelete(stat.id)}
                           className="hover:text-red-600"
                         >
-                          <X className="w-5 h-5" />
+                          <FiXSquare className='text-black' size={22} />
                         </button>
                       </td>
                     </tr>

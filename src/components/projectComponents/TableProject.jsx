@@ -88,7 +88,7 @@ export default function ManageProjects() {
                     {/* 👇 Updated Active Status with Toggle Switch */}
                     <button
                         onClick={() => handleToggleStatus(p.id)}
-                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 focus:outline-none ${p.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
+                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 focus:outline-none ${p.isActive ? 'bg-blue-500' : 'bg-gray-400'}`}
                         title={p.isActive ? 'Active' : 'Inactive'}
                     >
                         <span className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${p.isActive ? 'translate-x-6' : 'translate-x-1'}`} />

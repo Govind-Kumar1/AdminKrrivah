@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, X, Plus } from "lucide-react";
+import {  Plus } from "lucide-react";
+import { FiEdit,FiXSquare } from "react-icons/fi";
 import DesignForm from "./DesignForm";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -160,7 +161,7 @@ const ManageDesigns = () => {
                           }}
                           className="hover:text-blue-600"
                         >
-                          <Pencil className="w-5 h-5" />
+                          <FiEdit className='text-black w-5 h-5' size={22} />
                         </button>
                       </td>
                     </tr>
