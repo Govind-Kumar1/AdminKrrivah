@@ -25,7 +25,7 @@ const LoginPage = () => {
         setLoading(true);
         setError(''); // Clear previous errors
 
-        try {
+        try { 
             // API endpoint for login
             const API_URL = 'http://localhost:5000/api/auth/login';
 

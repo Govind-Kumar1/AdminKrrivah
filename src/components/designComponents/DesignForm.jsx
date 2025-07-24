@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
+const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
-    pageName:"home",
-    component:"crafted-purpose",
+    pageName:"design",
     image: null,
   }); 
 
   useEffect(() => {
   if (mode === "edit" && item) {
     setFormData({
-      pageName: item.pageName || "home",
-      component: item.component || "crafted-purpose",
+      pageName: item.pageName || "design",
       image: null, // don't prefill file input
     });
   }
@@ -61,4 +59,4 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   );
 };
 
-export default GalleryForm;
+export default DesignForm;

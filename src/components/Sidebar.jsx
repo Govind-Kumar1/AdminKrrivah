@@ -11,8 +11,7 @@ const Sidebar = () => {
   const [homeDrawerOpen, setHomeDrawerOpen] = useState(false);
 
   const navLinks = [
-    { name: "DASHBOARD", path: "/admin" },
-    // THEEK KIYA HUA OBJECT 👇
+    { name: "DASHBOARD", path: "/admin/dashboard" },
     { name: "HOME", path: "/admin/home", hasDrawer: true },
     { name: "DESIGN", path: "/admin/design" },
     { name: "PROJECT", path: "/admin/project" },

@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminLayout from '../components/AdminLayout';
-import ManageDesigns from '../components/ManageDesigns';
+import ManageDesigns from '../components/designComponents/ManageDesigns';
 
 const DesignPage = () => {
   const breadcrumbs = [
