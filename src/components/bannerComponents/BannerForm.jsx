@@ -14,7 +14,7 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         brand: item.brand || "",
         title: item.title || "",
         description: item.description || "",
-        image: null, // Don't prefill file
+        image: item.imageUrl, // Don't prefill file
       });
     }
   }, [mode, item]);
@@ -74,6 +74,7 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
+        <img src={`${formData.image}`} alt="image" height={200} width={200} />
       </div>
 
       <div className="flex justify-between mt-6">

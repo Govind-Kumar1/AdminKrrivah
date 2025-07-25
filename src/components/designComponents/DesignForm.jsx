@@ -11,7 +11,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   if (mode === "edit" && item) {
     setFormData({
       pageName: item.pageName || "design",
-      image: null, // don't prefill file input
+      image: item.imageUrl, // don't prefill file input
       component:item.component
     });
   }
@@ -40,6 +40,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
+        <img src={`${item.imageUrl}`} alt="Image" height={200} width={200} />
       </div>
       <div>
         <label className="block font-medium">Component</label>

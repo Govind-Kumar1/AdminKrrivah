@@ -12,7 +12,7 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     setFormData({
       pageName: item.pageName || "home",
       component: item.component || "crafted-purpose",
-      image: null, // don't prefill file input
+      image: item.imageUrl, // don't prefill file input
     });
   }
 }, [mode, item]);
@@ -40,6 +40,8 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
+                <img src={`${item.imageUrl}`} alt="Image" height={200} width={200} />
+
       </div>
 
       <div className="flex justify-between mt-6">
