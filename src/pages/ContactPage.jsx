@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminLayout from '../components/AdminLayout'; // Sahi path dein
-import ManageContacts from '../components/ManageContacts'; // Sahi path dein
+import ManageContacts from '../components/contactComponents/ManageContacts'; // Sahi path dein
 
 const ContactPage = () => {
     // Contact page ke liye breadcrumbs

@@ -4,10 +4,8 @@ import { FiEdit,FiXSquare } from "react-icons/fi";
 
 import BannerForm from "./BannerForm"; // Your form component
 import axios from "axios";
-// const API_URL
+const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// Define your backend API base URL
-const API_URL = "http://localhost:5000/api/heroBrand";
 
 const ManageBanners = () => {
   const [mode, setMode] = useState("table"); // 'table', 'add', 'edit'
@@ -23,7 +21,7 @@ const ManageBanners = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${api_url}/api/heroBrand`);
       setData(res.data);
     } catch (err) {
       setError("Failed to fetch banners. Please try again later.");
@@ -44,7 +42,7 @@ const ManageBanners = () => {
       try {
         // console.log("id is",id);
 
-        await axios.delete(`${API_URL}/${id}`, { withCredentials: true });
+        await axios.delete(`${api_url}/api/heroBrand/${id}`, { withCredentials: true });
         fetchBanners(); // Refetch data to update the UI
       } catch (err) {
         alert("Failed to delete banner.");
@@ -62,14 +60,14 @@ const ManageBanners = () => {
         Object.keys(formData).forEach((key) => {
           apiFormData.append(key, formData[key]);
         });
-        await axios.post(API_URL, apiFormData, {
+        await axios.post(`${api_url}/api/heroBrand`, apiFormData, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else if (mode === "edit") {
         // For editing, we send JSON (assuming no image update for now)
         // Note: If your PUT route supports image updates, this needs to be multipart/form-data too.
-        await axios.put(`${API_URL}/update/${editingItem.id}`, formData, {
+        await axios.put(`${api_url}/api/heroBrand/update/${editingItem.id}`, formData, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -91,7 +89,7 @@ const ManageBanners = () => {
       console.log(item);
       
       await axios.put(
-        `${API_URL}/update/${item.id}`,
+        `${api_url}/api/heroBrand/update/${item.id}`,
         { isActive: !item.isActive },
         { withCredentials: true }
       );

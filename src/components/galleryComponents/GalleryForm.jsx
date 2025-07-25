@@ -31,7 +31,7 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4">
       <div>
         <label className="block font-medium">Image</label>
         <input

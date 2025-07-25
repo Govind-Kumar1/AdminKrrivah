@@ -115,7 +115,7 @@ const ManageDesigns = () => {
     <div className="bg-[#D6D6D6] flex  justify-center p-4">
       <div className="w-full max-w-6xl rounded-md shadow-lg overflow-hidden bg-white">
         {/* Header */}
-        <div className="bg-[#383D34] text-white flex justify-between items-center px-6 py-4">
+        <div className="bg-[#383D34] text-white flex justify-between items-center px-6 py-2">
           <h2 className="text-lg font-medium">Manage Gallery</h2>
           {mode === "table" && (
             <button
