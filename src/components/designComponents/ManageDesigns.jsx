@@ -17,9 +17,11 @@ const ManageDesigns = () => {
   const [mode, setMode] = useState("table");
   const [data, setData] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
+  const [loading,setLoading]=useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       try {
         const res = await axios.get(`${api_url}/api/image/getByPage/design`, {
           withCredentials: true,
@@ -29,6 +31,9 @@ const ManageDesigns = () => {
       } catch (error) {
         console.error("Failed to fetch gallery:", error);
       }
+      finally {
+      setLoading(false); // Stop loader
+    }
     };
 
     fetchData();
@@ -36,6 +41,7 @@ const ManageDesigns = () => {
 
   // Submit handler
   const handleSubmit = async (form) => {
+    setLoading(true)
     try {
       const formData = new FormData();
       formData.append("pageName", form.pageName);
@@ -71,6 +77,9 @@ const ManageDesigns = () => {
       setEditingItem(null);
     } catch (error) {
       console.error("Submit error:", error);
+    }
+    finally {
+      setLoading(false); // Stop loader
     }
   };
   // const handleToggleActive = async (item) => {
@@ -111,6 +120,14 @@ const ManageDesigns = () => {
   //   }
   // };
 
+  if (loading) {
+    return (
+      <div className="bg-white flex flex-col items-center justify-center h-64 gap-2">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+        <p className="text-sm text-black">Loading Designs...</p>
+      </div>
+    );
+  }
   return (
     <div className="bg-[#D6D6D6] flex  justify-center p-4">
       <div className="w-full max-w-6xl rounded-md shadow-lg overflow-hidden bg-white">

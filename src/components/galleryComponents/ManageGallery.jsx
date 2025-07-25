@@ -17,9 +17,11 @@ const ManageGallery = () => {
   const [mode, setMode] = useState("table");
   const [data, setData] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const res = await axios.get(`${api_url}/api/image/getByPage/home`, {
           withCredentials: true,
@@ -28,6 +30,8 @@ const ManageGallery = () => {
         // console.log(res.data.data);
       } catch (error) {
         console.error("Failed to fetch gallery:", error);
+      } finally {
+        setLoading(false); // Stop loader
       }
     };
 
@@ -36,6 +40,7 @@ const ManageGallery = () => {
 
   // Submit handler
   const handleSubmit = async (form) => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("pageName", form.pageName);
@@ -71,14 +76,14 @@ const ManageGallery = () => {
       setEditingItem(null);
     } catch (error) {
       console.error("Submit error:", error);
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
   const handleToggleActive = async (item) => {
+    setLoading(true);
     try {
-      console.log(item);
-
       const updatedIsActive = !item.isActive;
-
       await axios.put(
         `${api_url}/api/image/${item.id}`,
         { isActive: updatedIsActive },
@@ -94,12 +99,15 @@ const ManageGallery = () => {
     } catch (error) {
       console.error("Failed to update isActive status:", error);
       alert("Error updating status. Try again.");
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
   // Delete handler
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this Image?")) {
+      setLoading(true);
       try {
         await axios.delete(`${api_url}/api/image/${id}`, {
           withCredentials: true,
@@ -107,9 +115,19 @@ const ManageGallery = () => {
         setData((prev) => prev.filter((item) => item.id !== id));
       } catch (error) {
         console.error("Delete error:", error);
+      } finally {
+        setLoading(false); // Stop loader
       }
     }
   };
+  if (loading) {
+    return (
+      <div className="bg-white flex flex-col items-center justify-center h-64 gap-2">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+        <p className="text-sm text-black">Loading Gallery...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#D6D6D6] flex  justify-center p-4">

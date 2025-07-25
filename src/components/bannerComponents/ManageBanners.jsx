@@ -39,20 +39,23 @@ const ManageBanners = () => {
   // Function to handle deleting a banner
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this banner?")) {
+      setLoading(true);
       try {
-        // console.log("id is",id);
 
         await axios.delete(`${api_url}/api/heroBrand/${id}`, { withCredentials: true });
         fetchBanners(); // Refetch data to update the UI
       } catch (err) {
+        setLoading(false);
         alert("Failed to delete banner.");
         console.error(err);
       }
+      setLoading(false);
     }
   };
 
   // Function to handle form submission for both add and edit modes
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       if (mode === "add") {
         // For adding, we send multipart/form-data
@@ -74,9 +77,11 @@ const ManageBanners = () => {
       }
       fetchBanners(); // Refetch data on success
     } catch (err) {
+      setLoading(false);
       alert(`Failed to ${mode} banner.`);
       console.error(err);
     } finally {
+      setLoading(false);
       setMode("table");
       setEditingItem(null);
     }
@@ -84,6 +89,7 @@ const ManageBanners = () => {
 
   // Function to toggle the active status
   const handleToggleStatus = async (item) => {
+    setLoading(true);
     try {
       // Your updateHeroBrand controller will handle the update
       console.log(item);
@@ -95,13 +101,22 @@ const ManageBanners = () => {
       );
       fetchBanners(); // Refetch to show the change
     } catch (err) {
+      setLoading(false);
       alert("Failed to update status.");
       console.error(err);
     }
+    setLoading(false);
   };
 
   // Render loading or error state
-  if (loading) return <div className="p-6 text-center">Loading banners...</div>;
+if (loading) {
+  return (
+    <div className=  "bg-white flex flex-col items-center justify-center h-64 gap-2">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+      <p className="text-sm text-black">Loading Banners...</p>
+    </div>
+  );
+}  
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
   return (

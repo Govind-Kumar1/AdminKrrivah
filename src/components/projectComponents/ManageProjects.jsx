@@ -34,6 +34,7 @@ const ManageProjects = () => {
 
   const handleDelete = async (id) => {
     if (confirm("Delete this project?")) {
+      setLoading(true)
       try {
         await axios.delete(`${api_url}/api/project/${id}`, {
           withCredentials: true,
@@ -41,11 +42,14 @@ const ManageProjects = () => {
         fetchProjects();
       } catch (err) {
         alert("Failed to delete project.");
+      } finally {
+        setLoading(false); // Stop loader
       }
     }
   };
 
   const handleSubmit = async (formData) => {
+    setLoading(true)
     try {
       const fd = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -73,10 +77,13 @@ const ManageProjects = () => {
       setEditingItem(null);
     } catch (err) {
       alert("Failed to submit project.");
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
   const toggleActiveStatus = async (item) => {
+    setLoading(true)
     try {
       await axios.put(
         `${api_url}/api/project/${item.id}`,
@@ -86,8 +93,19 @@ const ManageProjects = () => {
       fetchProjects();
     } catch (err) {
       alert("Failed to toggle status.");
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
+
+  if (loading) {
+    return (
+      <div className="bg-white flex flex-col items-center justify-center h-64 gap-2">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+        <p className="text-sm text-black">Loading Projects...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#D6D6D6] flex justify-center p-4">
@@ -126,7 +144,10 @@ const ManageProjects = () => {
                     <td className="border p-3">{item.title}</td>
                     <td className="border p-3">{item.short_des}</td>
                     <td className="border p-3">
-                      <img src={item.thumbnail} className="w-16 h-10 object-cover" />
+                      <img
+                        src={item.thumbnail}
+                        className="w-16 h-10 object-cover"
+                      />
                     </td>
                     <td className="border p-3">
                       {new Date(item.createdAt).toLocaleString()}

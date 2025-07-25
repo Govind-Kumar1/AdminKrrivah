@@ -36,18 +36,22 @@ const ManageBlogs = () => {
 
   const handleDelete = async (id) => {
     if (confirm("Delete this blog?")) {
+      setLoading(true);
       try {
         await axios.delete(`${api_url}/api/blog/${id}`, {
           withCredentials: true,
         });
         fetchBlogs();
       } catch (err) {
+        setLoading(false);
         alert("Failed to delete blog.");
       }
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       const apiFormData = new FormData();
       Object.keys(formData).forEach((key) => {
@@ -70,11 +74,14 @@ const ManageBlogs = () => {
       setMode("table");
       setEditingItem(null);
     } catch (err) {
+      setLoading(false);
       alert("Failed to submit blog.");
     }
+    setLoading(false);
   };
 
   const handleToggleStatus = async (item) => {
+    setLoading(true);
     try {
       // console.log(item.isActive);
       
@@ -85,12 +92,21 @@ const ManageBlogs = () => {
       );
       fetchBlogs();
     } catch (err) {
+      setLoading(false);
       alert("Failed to update status.");
     }
+    setLoading(false);
   };
 
-  if (loading) return <div className="p-6 text-center">Loading blogs...</div>;
-  // if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
+if (loading) {
+  return (
+    <div className=  "bg-white flex flex-col items-center justify-center h-64 gap-2">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+      <p className="text-sm text-black">Loading Blogs...</p>
+    </div>
+  );
+}  
+if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
   return (
     <div className="bg-[#D6D6D6] flex justify-center p-4">
