@@ -4,6 +4,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
     pageName:"design",
     image: null,
+    component:""
   }); 
 
   useEffect(() => {
@@ -11,6 +12,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     setFormData({
       pageName: item.pageName || "design",
       image: null, // don't prefill file input
+      component:item.component
     });
   }
 }, [mode, item]);
@@ -37,6 +39,16 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           name="image"
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
+        />
+      </div>
+      <div>
+        <label className="block font-medium">Component</label>
+        <input
+          type="text"
+          name="component"
+          value={formData.component}
+          onChange={handleChange}
+          className="border px-3 py-2 w-full rounded bg-white text-black"
         />
       </div>
 
