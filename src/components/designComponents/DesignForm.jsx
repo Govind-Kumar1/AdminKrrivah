@@ -2,20 +2,45 @@ import React, { useState, useEffect } from "react";
 
 const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
-    pageName:"design",
-    image: null,
-    component:""
-  }); 
+    pageName: "design",
+    image: "",
+    component: ""
+  });
+
+  const [imageDim, setImageDim] = useState(null);
 
   useEffect(() => {
-  if (mode === "edit" && item) {
-    setFormData({
-      pageName: item.pageName || "design",
-      image: item.imageUrl, // don't prefill file input
-      component:item.component
+    if (mode === "edit" && item) {
+      setFormData({
+        pageName: item.pageName || "design",
+        image: item.imageUrl,
+        component: item.component
+      });
+    }
+  }, [mode, item]);
+
+  // Function to get dimensions
+  const getImageDimensions = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = reject;
     });
-  }
-}, [mode, item]);
+  };
+
+  // Watch image & update dimensions
+  useEffect(() => {
+    if (formData.image && typeof formData.image === "string") {
+      getImageDimensions(formData.image).then(setImageDim);
+    } else if (formData.image && formData.image instanceof File) {
+      const objectUrl = URL.createObjectURL(formData.image);
+      getImageDimensions(objectUrl).then(dim => {
+        setImageDim(dim);
+        URL.revokeObjectURL(objectUrl);
+      });
+    }
+  }, [formData.image]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -40,8 +65,23 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
-        <img src={`${item.imageUrl}`} alt="Image" height={200} width={200} />
+        {formData.image && (
+          <div className="mt-2 flex flex-col items-center">
+            <img
+              src={typeof formData.image === "string" ? formData.image : URL.createObjectURL(formData.image)}
+              alt="Preview"
+              
+              className="h-[200px] w-[200px] object-cover"
+            />
+            {imageDim && (
+              <p className="text-sm text-gray-500 mt-1">
+                {imageDim.width} × {imageDim.height} px
+              </p>
+            )}
+          </div>
+        )}
       </div>
+
       <div>
         <label className="block font-medium">Component</label>
         <input

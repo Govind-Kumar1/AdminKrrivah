@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Editor } from "@tinymce/tinymce-react"; // import TinyMCE Editor
+import { Editor } from "@tinymce/tinymce-react";
 
 const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
     category: "",
     title: "",
     short_des: "",
-    Context: "",
+    long_des: "",
     thumbnail: null,
     mainImage: null,
-    middleImage:null,
     date: new Date().toISOString().substring(0, 10),
   });
-
   useEffect(() => {
     if (mode === "edit" && item) {
       setFormData({
@@ -23,10 +21,37 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         date: item.date?.substring(0, 10),
         thumbnail: item.thumbnail || null,
         mainImage: item.mainImage || null,
-        middleImage:item.middleImage||null,
       });
     }
   }, [item, mode]);
+
+  const [thumbnailDim, setThumbnailDim] = useState(null);
+  const [mainImageDim, setMainImageDim] = useState(null);
+
+  // Function to get image dimensions
+  const getImageDimensions = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () =>
+        resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = reject;
+    });
+  };
+
+  // Watch thumbnail and get dimensions
+  useEffect(() => {
+    if (formData.thumbnail && typeof formData.thumbnail === "string") {
+      getImageDimensions(formData.thumbnail).then(setThumbnailDim);
+    }
+  }, [formData.thumbnail]);
+
+  // Watch main image and get dimensions
+  useEffect(() => {
+    if (formData.mainImage && typeof formData.mainImage === "string") {
+      getImageDimensions(formData.mainImage).then(setMainImageDim);
+    }
+  }, [formData.mainImage]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -39,13 +64,6 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-  };
-  // handle TinyMCE context change
-  const handleEditorChange = (content) => {
-    setFormData((prev) => ({
-      ...prev,
-      long_des: content,
-    }));
   };
 
   return (
@@ -65,14 +83,19 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
         <div>
           <label className="block font-medium">Category</label>
-          <input
-            type="text"
+          <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="border px-3 py-2 w-full rounded"
+            className="border px-3 py-2 w-full rounded bg-white text-black"
             required
-          />
+          >
+            <option value="">Select Category</option>
+            <option value="Technology">Projects</option>
+            <option value="Design">Design</option>
+            <option value="Development">Trends</option>
+            <option value="Marketing">Sustainability</option>
+          </select>
         </div>
 
         <div>
@@ -116,7 +139,6 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             image_title: true,
             automatic_uploads: true,
             file_picker_types: "image",
-            /* if you're using custom image upload you can configure here */
           }}
         />
       </div>
@@ -130,8 +152,22 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             onChange={handleChange}
             className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
           />
-          <img src={`${formData.thumbnail}`} alt="thumbnail"  />
+          {formData.thumbnail && (
+            <div className="mt-2">
+              <img
+                src={`${formData.thumbnail}`}
+                alt="thumbnail"
+                className="h-40 w-40 object-cover"
+              />
+              {thumbnailDim && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {thumbnailDim.width} × {thumbnailDim.height} px
+                </p>
+              )}
+            </div>
+          )}
         </div>
+
         <div>
           <label className="block font-medium">Main Image</label>
           <input
@@ -140,17 +176,20 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             onChange={handleChange}
             className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
           />
-          <img src={`${formData.mainImage}`} alt="mainImage"  />
-        </div>
-        <div>
-          <label className="block font-medium">Middle Image</label>
-          <input
-            type="file"
-            name="middleImage"
-            onChange={handleChange}
-            className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
-          />
-          <img src={`${formData.middleImage}`} alt="" />
+          {formData.mainImage && (
+            <div className="mt-2">
+              <img
+                src={`${formData.mainImage}`}
+                alt="mainImage"
+                className="h-40 w-40 object-cover"
+              />
+              {mainImageDim && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {mainImageDim.width} × {mainImageDim.height} px
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
