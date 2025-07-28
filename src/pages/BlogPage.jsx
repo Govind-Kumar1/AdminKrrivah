@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminLayout from '../components/AdminLayout'; // Layout component import karein
-import ManageBlogs from '../components/ManageBlogs'; // Blog ka content import karein
+import ManageBlogs from '../components/blogComponents/ManageBlogs'; // Blog ka content import karein
 
 const BlogPage = () => {
     // Is page ke liye breadcrumbs define karein

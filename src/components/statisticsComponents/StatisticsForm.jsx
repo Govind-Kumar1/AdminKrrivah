@@ -28,7 +28,7 @@ const StatisticsForm = ({ mode, item, onCancel, onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 p-4">
       <div className="grid grid-cols-3 gap-4 items-center">
         
         <label htmlFor="unit" className="text-right font-medium">

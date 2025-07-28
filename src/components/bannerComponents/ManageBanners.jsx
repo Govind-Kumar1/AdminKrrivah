@@ -4,10 +4,8 @@ import { FiEdit,FiXSquare } from "react-icons/fi";
 
 import BannerForm from "./BannerForm"; // Your form component
 import axios from "axios";
-// const API_URL
+const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// Define your backend API base URL
-const API_URL = "http://localhost:5000/api/heroBrand";
 
 const ManageBanners = () => {
   const [mode, setMode] = useState("table"); // 'table', 'add', 'edit'
@@ -23,7 +21,7 @@ const ManageBanners = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${api_url}/api/heroBrand`);
       setData(res.data);
     } catch (err) {
       setError("Failed to fetch banners. Please try again later.");
@@ -41,20 +39,23 @@ const ManageBanners = () => {
   // Function to handle deleting a banner
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this banner?")) {
+      setLoading(true);
       try {
-        // console.log("id is",id);
 
-        await axios.delete(`${API_URL}/${id}`, { withCredentials: true });
+        await axios.delete(`${api_url}/api/heroBrand/${id}`, { withCredentials: true });
         fetchBanners(); // Refetch data to update the UI
       } catch (err) {
+        setLoading(false);
         alert("Failed to delete banner.");
         console.error(err);
       }
+      setLoading(false);
     }
   };
 
   // Function to handle form submission for both add and edit modes
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       if (mode === "add") {
         // For adding, we send multipart/form-data
@@ -62,23 +63,25 @@ const ManageBanners = () => {
         Object.keys(formData).forEach((key) => {
           apiFormData.append(key, formData[key]);
         });
-        await axios.post(API_URL, apiFormData, {
+        await axios.post(`${api_url}/api/heroBrand`, apiFormData, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else if (mode === "edit") {
         // For editing, we send JSON (assuming no image update for now)
         // Note: If your PUT route supports image updates, this needs to be multipart/form-data too.
-        await axios.put(`${API_URL}/update/${editingItem.id}`, formData, {
+        await axios.put(`${api_url}/api/heroBrand/update/${editingItem.id}`, formData, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
       fetchBanners(); // Refetch data on success
     } catch (err) {
+      setLoading(false);
       alert(`Failed to ${mode} banner.`);
       console.error(err);
     } finally {
+      setLoading(false);
       setMode("table");
       setEditingItem(null);
     }
@@ -86,24 +89,34 @@ const ManageBanners = () => {
 
   // Function to toggle the active status
   const handleToggleStatus = async (item) => {
+    setLoading(true);
     try {
       // Your updateHeroBrand controller will handle the update
       console.log(item);
       
       await axios.put(
-        `${API_URL}/update/${item.id}`,
+        `${api_url}/api/heroBrand/update/${item.id}`,
         { isActive: !item.isActive },
         { withCredentials: true }
       );
       fetchBanners(); // Refetch to show the change
     } catch (err) {
+      setLoading(false);
       alert("Failed to update status.");
       console.error(err);
     }
+    setLoading(false);
   };
 
   // Render loading or error state
-  if (loading) return <div className="p-6 text-center">Loading banners...</div>;
+if (loading) {
+  return (
+    <div className=  "bg-white flex flex-col items-center justify-center h-64 gap-2">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+      <p className="text-sm text-black">Loading Banners...</p>
+    </div>
+  );
+}  
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
   return (

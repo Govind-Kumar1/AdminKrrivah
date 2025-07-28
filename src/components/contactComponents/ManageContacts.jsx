@@ -11,6 +11,7 @@ export default function ManageContacts() {
   // API se data fetch karne ka example
 
   const loadContacts = async () => {
+    setLoading(true)
     try {
       const res = await axios.get(`${api_url}/api/contact`, {
         withCredentials: true,
@@ -18,13 +19,24 @@ export default function ManageContacts() {
       setContacts(res.data.data || []);
       // console.log(res.data);
     } catch (error) {
-      console.error("Failed to fetch contacts:", error);
+      setLoading(false);
+      alert("Failed to fetch contacts");
     }
+    setLoading(false)
   };
 
   useEffect(() => {
     loadContacts();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-white flex flex-col items-center justify-center h-64 gap-2">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+        <p className="text-sm text-black">Loading Contacts...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-1">
@@ -61,7 +73,9 @@ export default function ManageContacts() {
                       timeStyle: "short",
                     })}
                   </td>
-                  <td className="border p-3 font-medium">{contact.firstName}</td>
+                  <td className="border p-3 font-medium">
+                    {contact.firstName}
+                  </td>
                   <td className="border p-3 font-medium">{contact.lastName}</td>
                   <td className="border p-3 text-blue-600 hover:underline">
                     <a href={`mailto:${contact.email}`}>{contact.email}</a>

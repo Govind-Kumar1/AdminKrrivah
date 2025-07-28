@@ -10,6 +10,7 @@ const ManageStatistics = () => {
   const [mode, setMode] = useState("table");
   const [data, setData] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch on mount
   useEffect(() => {
@@ -17,12 +18,15 @@ const ManageStatistics = () => {
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(`${api_url}/api/stat`);
       setData(res.data.data || []);
       console.log("Fetched stats:", res.data.data);
     } catch (error) {
       console.error("Failed to fetch stats", error);
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -32,6 +36,7 @@ const ManageStatistics = () => {
   };
 
   const handleDelete = async (id) => {
+    setLoading(true);
     try {
       await axios.delete(`${api_url}/api/stat/${id}`, {
         withCredentials: true,
@@ -39,6 +44,8 @@ const ManageStatistics = () => {
       fetchData();
     } catch (error) {
       console.error("Delete error:", error);
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -48,6 +55,7 @@ const ManageStatistics = () => {
   };
 
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       if (mode === "edit") {
         await axios.put(
@@ -62,17 +70,28 @@ const ManageStatistics = () => {
           withCredentials: true,
         });
       }
-
       fetchData();
       setMode("table");
       setEditingItem(null);
     } catch (error) {
       console.error("Submit error:", error);
     }
+     finally {
+      setLoading(false); // Stop loader
+    }
   };
 
+    if (loading) {
+    return (
+      <div className="bg-white flex flex-col items-center justify-center h-64 gap-2">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+        <p className="text-sm text-black">Loading Stats...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-[#D6D6D6] flex justify-center">
+    <div className="bg-[#D6D6D6] flex justify-center p-4">
       <div className="w-full max-w-6xl rounded-md shadow-lg overflow-hidden bg-white">
         <div className="bg-[#383D34] text-white flex justify-between items-center px-6 py-2">
           <h2 className="text-lg font-medium">Manage Statistics</h2>
