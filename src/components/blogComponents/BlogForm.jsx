@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react"; // import TinyMCE Editor
 
-
 const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
     category: "",
@@ -10,6 +9,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     Context: "",
     thumbnail: null,
     mainImage: null,
+    middleImage:null,
     date: new Date().toISOString().substring(0, 10),
   });
 
@@ -20,10 +20,10 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         title: item.title || "",
         short_des: item.short_des || "",
         long_des: item.long_des || "",
-        quote: item.quote || "",
         date: item.date?.substring(0, 10),
-        thumbnail: null,
-        mainImage: null,
+        thumbnail: item.thumbnail || null,
+        mainImage: item.mainImage || null,
+        middleImage:item.middleImage||null,
       });
     }
   }, [item, mode]);
@@ -40,7 +40,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     e.preventDefault();
     onSubmit(formData);
   };
-    // handle TinyMCE context change
+  // handle TinyMCE context change
   const handleEditorChange = (content) => {
     setFormData((prev) => ({
       ...prev,
@@ -85,7 +85,6 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             className="border px-3 py-2 w-full rounded"
           />
         </div>
-
       </div>
 
       <div>
@@ -102,21 +101,24 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
       <div>
         <label className="block font-medium mb-1">Context</label>
         <Editor
-  apiKey='elkvqlzu7jsm28i60g9j6g95l5nyk18sh7e5d6ioznatbgh1'
-  value={formData.long_des}
-  onEditorChange={(content) => setFormData({ ...formData, long_des: content })}
-  init={{
-    height: 400, 
-    plugins: 'image link lists code',
-    toolbar: 'undo redo | formatselect | bold italic blockquote | alignleft aligncenter alignright | bullist numlist | image code',
-    block_formats: 'Paragraph=p; Heading 1=h1; Heading 2=h2; Quote=blockquote',
-    image_title: true,
-    automatic_uploads: true,
-    file_picker_types: 'image',
-    /* if you're using custom image upload you can configure here */
-  }}
-/>
-
+          apiKey="elkvqlzu7jsm28i60g9j6g95l5nyk18sh7e5d6ioznatbgh1"
+          value={formData.long_des}
+          onEditorChange={(content) =>
+            setFormData({ ...formData, long_des: content })
+          }
+          init={{
+            height: 400,
+            plugins: "image link lists code",
+            toolbar:
+              "undo redo | formatselect | bold italic blockquote | alignleft aligncenter alignright | bullist numlist | image code",
+            block_formats:
+              "Paragraph=p; Heading 1=h1; Heading 2=h2; Quote=blockquote",
+            image_title: true,
+            automatic_uploads: true,
+            file_picker_types: "image",
+            /* if you're using custom image upload you can configure here */
+          }}
+        />
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -128,6 +130,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             onChange={handleChange}
             className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
           />
+          <img src={`${formData.thumbnail}`} alt="thumbnail"  />
         </div>
         <div>
           <label className="block font-medium">Main Image</label>
@@ -137,14 +140,32 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             onChange={handleChange}
             className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
           />
+          <img src={`${formData.mainImage}`} alt="mainImage"  />
+        </div>
+        <div>
+          <label className="block font-medium">Middle Image</label>
+          <input
+            type="file"
+            name="middleImage"
+            onChange={handleChange}
+            className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
+          />
+          <img src={`${formData.middleImage}`} alt="" />
         </div>
       </div>
 
       <div className="flex justify-between mt-6">
-        <button type="button" onClick={onCancel} className="px-4 py-2 border rounded">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 border rounded"
+        >
           Close Form
         </button>
-        <button type="submit" className="bg-[#383D34] text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-[#383D34] text-white px-4 py-2 rounded"
+        >
           Submit
         </button>
       </div>

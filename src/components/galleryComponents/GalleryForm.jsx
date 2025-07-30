@@ -12,7 +12,7 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     setFormData({
       pageName: item.pageName || "home",
       component: item.component || "crafted-purpose",
-      image: null, // don't prefill file input
+      image: item.imageUrl, // don't prefill file input
     });
   }
 }, [mode, item]);
@@ -32,15 +32,19 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4">
-      <div>
-        <label className="block font-medium">Image</label>
-        <input
-          type="file"
-          name="image"
-          onChange={handleChange}
-          className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
-        />
-      </div>
+       <div>
+  <label className="block font-medium">Image</label>
+  <input
+    type="file"
+    name="image"
+    onChange={handleChange}
+    className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
+  />
+  {item?.imageUrl && (
+    <img src={item.imageUrl} alt="Image" height={200} width={200} />
+  )}
+</div>
+
 
       <div className="flex justify-between mt-6">
         <button
