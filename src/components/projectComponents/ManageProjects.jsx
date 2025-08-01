@@ -27,14 +27,14 @@ const ManageProjects = () => {
       setLoading(false);
     }
   };
- 
+
   useEffect(() => {
     fetchProjects();
   }, []);
 
   const handleDelete = async (id) => {
     if (confirm("Delete this project?")) {
-      setLoading(true)
+      setLoading(true);
       try {
         await axios.delete(`${api_url}/api/project/${id}`, {
           withCredentials: true,
@@ -43,22 +43,29 @@ const ManageProjects = () => {
       } catch (err) {
         alert("Failed to delete project.");
       } finally {
-        setLoading(false); // Stop loader
+        setLoading(false);
       }
     }
   };
 
   const handleSubmit = async (formData) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const fd = new FormData();
+
+      // Append fields properly
       Object.entries(formData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          console.log(key,v);
-          value.forEach((v) => fd.append(key, v));
-        } else {
+        
+        if (key === "Amenities") {
+          fd.append("amenities", JSON.stringify(value));
+        } else if (key === "images" && Array.isArray(value)) {
+          value.forEach((img) => fd.append("images", img));
+        } else if ((key === "thumbnail" || key === "brochure") && value) {
+          fd.append(key, value);
+        } else if (typeof value !== "object") {
           fd.append(key, value);
         }
+        
       });
 
       if (mode === "add") {
@@ -79,12 +86,12 @@ const ManageProjects = () => {
     } catch (err) {
       alert("Failed to submit project.");
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false);
     }
   };
 
   const toggleActiveStatus = async (item) => {
-    setLoading(true)
+    setLoading(true);
     try {
       await axios.put(
         `${api_url}/api/project/${item.id}`,
@@ -95,7 +102,7 @@ const ManageProjects = () => {
     } catch (err) {
       alert("Failed to toggle status.");
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false);
     }
   };
 
