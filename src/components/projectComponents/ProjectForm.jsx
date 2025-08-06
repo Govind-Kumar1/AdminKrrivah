@@ -13,40 +13,41 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     thumbnail: null,
     brochure: null,
     images: [],
-    Amenities: "",
+    Amenities: {
+      villa: "",
+      apartment: "",
+    },
   });
 
-  useEffect(() => { 
+  useEffect(() => {
     if (mode === "edit" && item) {
-      setFormData((prev) => ({
-        ...prev,
+      setFormData({
         title: item.title || "",
         category: item.category || "",
         date: item.createdAt?.split("T")[0] || "",
         location: item.location || "",
         short_des: item.short_des || "",
         long_des: item.long_des || "",
-        Amenities: item.Amenities?.map((a) => a.title).join(", ") || "",
-        thumbnail: null,
+        Amenities: {
+          villa: item.Amenities?.villa?.join(", ") || "",
+          apartment: item.Amenities?.apartment?.join(", ") || "",
+        },
+        thumbnail: null, // handled separately in submit
         brochure: null,
         images: [],
-      }));
+      });
     }
   }, [item, mode]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, dataset } = e.target;
 
     if (files) {
-      
       if (name === "images") {
-        let img = [];
-        for(let file in Object.keys(files)){
-          img.push(files[file])
-        }
+        let img = Array.from(files);
         setFormData((prev) => ({
           ...prev,
-          images: [...(prev.images),...img].slice(0, 10),
+          images: [...prev.images, ...img].slice(0, 10),
         }));
       } else {
         setFormData((prev) => ({
@@ -54,6 +55,14 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           [name]: files[0],
         }));
       }
+    } else if (dataset.type === "amenity") {
+      setFormData((prev) => ({
+        ...prev,
+        Amenities: {
+          ...prev.Amenities,
+          [name]: value,
+        },
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -64,10 +73,19 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     const preparedData = {
       ...formData,
-      Amenities: formData.Amenities.split(",").map((a) => a.trim()),
+      Amenities: {
+        villa: formData.Amenities.villa
+          .split(",")
+          .map((a) => a.trim()),
+        apartment: formData.Amenities.apartment
+          .split(",")
+          .map((a) => a.trim())
+      },
     };
+
     onSubmit(preparedData);
   };
 
@@ -145,17 +163,38 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
+        {
+          formData.thumbnail && (
+            <img
+              src={formData.thumbnail}
+              alt="Thumbnail Preview"
+              className="mt-2 w-32 h-20 object-cover"
+            />
+          )
+        }
       </div>
 
       <div>
-        <label className="block font-medium">Amenities</label>
+        <label className="block font-medium">Villa Amenities</label>
         <input
           type="text"
-          name="Amenities"
-          value={formData.Amenities}
+          name="villa"
+          data-type="amenity"
+          value={formData.Amenities.villa}
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded"
-          placeholder="Comma separated values (e.g., Pool, Gym, Lift)"
+          placeholder="Comma separated Villa Amenities"
+        />
+
+        <label className="block font-medium mt-3">Apartment Amenities</label>
+        <input
+          type="text"
+          name="apartment"
+          data-type="amenity"
+          value={formData.Amenities.apartment}
+          onChange={handleChange}
+          className="border px-3 py-2 w-full rounded"
+          placeholder="Comma separated Apartment Amenities"
         />
       </div>
 
@@ -174,7 +213,10 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label className="block font-medium">
-            Upload Image <span className="text-sm">(Upto 10)</span>
+            Upload Images{" "}
+            <span className="ml-1 text-sm text-gray-500">
+              (Max 10 images, Size ≤ 10MB)
+            </span>
           </label>
           <input
             type="file"
@@ -187,7 +229,10 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         </div>
 
         <div>
-          <label className="block font-medium">Upload Brochure</label>
+          <label className="block font-medium">
+            Upload Brochure
+            <span className="ml-1 text-sm text-gray-500">(Size ≤ 10MB)</span>
+          </label>
           <input
             type="file"
             name="brochure"
