@@ -7,6 +7,28 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     description: "",
     image: null,
   });
+    const [imageDim, setImageDim] = useState(null);
+    const getImageDimensions = (url) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        img.onerror = reject;
+      });
+    };
+  
+    // Watch image & update dimensions
+    useEffect(() => {
+      if (formData.image && typeof formData.image === "string") {
+        getImageDimensions(formData.image).then(setImageDim);
+      } else if (formData.image && formData.image instanceof File) {
+        const objectUrl = URL.createObjectURL(formData.image);
+        getImageDimensions(objectUrl).then(dim => {
+          setImageDim(dim);
+          URL.revokeObjectURL(objectUrl);
+        });
+      }
+    }, [formData.image]);
 
   useEffect(() => {
     if (mode === "edit" && item) {
@@ -74,7 +96,21 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
-        <img src={`${formData.image}`} alt="image" height={200} width={200} />
+        {formData.image && (
+          <div className="mt-2 flex flex-col items-center">
+            <img
+              src={typeof formData.image === "string" ? formData.image : URL.createObjectURL(formData.image)}
+              alt="Preview"
+              
+              className="h-[200px] w-[200px] object-cover"
+            />
+            {imageDim && (
+              <p className="text-sm text-gray-500 mt-1">
+                {imageDim.width} × {imageDim.height} px
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between mt-6">

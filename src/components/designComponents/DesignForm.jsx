@@ -3,19 +3,44 @@ import React, { useState, useEffect } from "react";
 const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
     pageName: "design",
-    image: null,
+    image: "",
     component: ""
   });
+
+  const [imageDim, setImageDim] = useState(null);
 
   useEffect(() => {
     if (mode === "edit" && item) {
       setFormData({
         pageName: item.pageName || "design",
-        image: null, // file input cannot be pre-filled
-        component: item.component || ""
+        image: item.imageUrl,
+        component: item.component
       });
     }
   }, [mode, item]);
+
+  // Function to get dimensions
+  const getImageDimensions = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = reject;
+    });
+  };
+
+  // Watch image & update dimensions
+  useEffect(() => {
+    if (formData.image && typeof formData.image === "string") {
+      getImageDimensions(formData.image).then(setImageDim);
+    } else if (formData.image && formData.image instanceof File) {
+      const objectUrl = URL.createObjectURL(formData.image);
+      getImageDimensions(objectUrl).then(dim => {
+        setImageDim(dim);
+        URL.revokeObjectURL(objectUrl);
+      });
+    }
+  }, [formData.image]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -40,27 +65,20 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
-
-        {/* Show preview for existing image in edit mode */}
-        {item?.imageUrl && (
-          <img
-            src={item.imageUrl}
-            alt="Existing"
-            height={200}
-            width={200}
-            className="mt-2"
-          />
-        )}
-
-        {/* Show preview of newly selected image */}
-        {formData.image && typeof formData.image !== "string" && (
-          <img
-            src={URL.createObjectURL(formData.image)}
-            alt="Preview"
-            height={200}
-            width={200}
-            className="mt-2"
-          />
+        {formData.image && (
+          <div className="mt-2 flex flex-col items-center">
+            <img
+              src={typeof formData.image === "string" ? formData.image : URL.createObjectURL(formData.image)}
+              alt="Preview"
+              
+              className="h-[200px] w-[200px] object-cover"
+            />
+            {imageDim && (
+              <p className="text-sm text-gray-500 mt-1">
+                {imageDim.width} × {imageDim.height} px
+              </p>
+            )}
+          </div>
         )}
       </div>
 

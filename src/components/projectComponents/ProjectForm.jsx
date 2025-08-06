@@ -16,7 +16,7 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     Amenities: "",
   });
 
-  useEffect(() => {
+  useEffect(() => { 
     if (mode === "edit" && item) {
       setFormData((prev) => ({
         ...prev,
@@ -38,10 +38,15 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     const { name, value, files } = e.target;
 
     if (files) {
+      
       if (name === "images") {
+        let img = [];
+        for(let file in Object.keys(files)){
+          img.push(files[file])
+        }
         setFormData((prev) => ({
           ...prev,
-          images: Array.from(files).slice(0, 10),
+          images: [...(prev.images),...img].slice(0, 10),
         }));
       } else {
         setFormData((prev) => ({

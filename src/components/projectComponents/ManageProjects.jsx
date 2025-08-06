@@ -27,7 +27,7 @@ const ManageProjects = () => {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -54,6 +54,7 @@ const ManageProjects = () => {
       const fd = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
         if (Array.isArray(value)) {
+          console.log(key,v);
           value.forEach((v) => fd.append(key, v));
         } else {
           fd.append(key, value);
