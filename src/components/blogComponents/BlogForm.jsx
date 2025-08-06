@@ -7,6 +7,8 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     title: "",
     short_des: "",
     long_des: "",
+    slug_keywords:"",
+    slug_url:"",
     thumbnail: null,
     mainImage: null,
     date: new Date().toISOString().substring(0, 10),
@@ -18,6 +20,8 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         title: item.title || "",
         short_des: item.short_des || "",
         long_des: item.long_des || "",
+        slug_keywords:item.slug_keywords||"",
+        slug_url:item.slug_url||"",
         date: item.date?.substring(0, 10),
         thumbnail: item.thumbnail || null,
         mainImage: item.mainImage || null,
@@ -109,6 +113,30 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           />
         </div>
       </div>
+      <div>
+        <div>
+          <label className="block font-medium">Slug URL</label>
+          <input
+            type="text"
+            name="slug_url"
+            value={formData.slug_url}
+            onChange={handleChange}
+            className="border px-3 py-2 w-full rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-medium">Slug Keywords</label>
+          <input
+            type="text"
+            name="slug_keywords"
+            value={formData.slug_keywords}
+            onChange={handleChange}
+            className="border px-3 py-2 w-full rounded"
+            required
+          />
+        </div>
+      </div>
 
       <div>
         <label className="block font-medium">Short Description</label>
@@ -122,7 +150,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
       </div>
 
       <div>
-        <label className="block font-medium mb-1">Context</label>
+        <label className="block font-medium mb-1">Context: (Dimension: 850px*1000px)</label>
         <Editor
           apiKey="elkvqlzu7jsm28i60g9j6g95l5nyk18sh7e5d6ioznatbgh1"
           value={formData.long_des}
@@ -145,7 +173,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
       <div className="grid md:grid-cols-3 gap-4">
         <div>
-          <label className="block font-medium">Thumbnail</label>
+          <label className="block font-medium">Thumbnail: (Dimension: 250px*180px)</label>
           <input
             type="file"
             name="thumbnail"
@@ -169,7 +197,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         </div>
 
         <div>
-          <label className="block font-medium">Main Image</label>
+          <label className="block font-medium">Main Image: (Dimension: 1100px*750px)</label>
           <input
             type="file"
             name="mainImage"
