@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {  Plus } from "lucide-react";
 import { FiEdit,FiXSquare } from "react-icons/fi";
-
 import StatisticsForm from "./StatisticsForm";
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
