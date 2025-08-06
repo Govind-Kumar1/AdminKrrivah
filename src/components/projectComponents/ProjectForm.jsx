@@ -73,16 +73,12 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const preparedData = {
       ...formData,
       Amenities: {
-        villa: formData.Amenities.villa
-          .split(",")
-          .map((a) => a.trim()),
-        apartment: formData.Amenities.apartment
-          .split(",")
-          .map((a) => a.trim())
+        villa: formData.Amenities.villa.split(",").map((a) => a.trim()),
+        apartment: formData.Amenities.apartment.split(",").map((a) => a.trim()),
       },
     };
 
@@ -155,7 +151,7 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
       </div>
 
       <div>
-        <label className="block font-medium">Blog Thumbnail</label>
+        <label className="block font-medium">Thumbnail: (Dimension: 450px*600px)</label>
         <input
           type="file"
           name="thumbnail"
@@ -163,15 +159,13 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
-        {
-          formData.thumbnail && (
-            <img
-              src={formData.thumbnail}
-              alt="Thumbnail Preview"
-              className="mt-2 w-32 h-20 object-cover"
-            />
-          )
-        }
+        {formData.thumbnail && (
+          <img
+            src={formData.thumbnail}
+            alt="Thumbnail Preview"
+            className="mt-2 w-32 h-20 object-cover"
+          />
+        )}
       </div>
 
       <div>
@@ -210,10 +204,10 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-1 gap-4">
         <div>
           <label className="block font-medium">
-            Upload Images{" "}
+            Upload Images: (Dimension: 650px*550px){" "}
             <span className="ml-1 text-sm text-gray-500">
               (Max 10 images, Size ≤ 10MB)
             </span>

@@ -89,7 +89,7 @@ const BannerForm = ({ mode, item = {}, onCancel, onSubmit }) => {
       </div>
 
       <div>
-        <label className="block font-medium">Main Image</label>
+        <label className="block font-medium">Main Image: (Dimension: 1100px*650px)</label>
         <input
           type="file"
           name="image"
