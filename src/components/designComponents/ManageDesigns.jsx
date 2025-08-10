@@ -1,47 +1,59 @@
 import React, { useEffect, useState } from "react";
-import {  Plus } from "lucide-react";
 import { FiEdit,FiXSquare } from "react-icons/fi";
 import DesignForm from "./DesignForm";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const initialData = [
-  {
-    id: "123456789",
-    image: "hero image",
-    isActive: false,
-  },
+
+const staticBentos = [
+  { id: "1", dimension:"275px*150px", component: "bento1", imageUrl: "", pageName: "design" },
+  { id: "2", dimension:"180px*150px", component: "bento2", imageUrl: "", pageName: "design" },
+  { id: "3", dimension:"375px*325px", component: "bento3", imageUrl: "", pageName: "design" },
+  { id: "4", dimension:"195px*155px", component: "bento4", imageUrl: "", pageName: "design" },
+  { id: "5", dimension:"180px*155px", component: "bento5", imageUrl: "", pageName: "design" },
+  { id: "6", dimension:"275px*240px", component: "bento6", imageUrl: "", pageName: "design" },
+  { id: "7", dimension:"195px*150px", component: "bento7", imageUrl: "", pageName: "design" },
+  { id: "8", dimension:"180px*240px", component: "bento8", imageUrl: "", pageName: "design" },
+  { id: "9", dimension:"275px*155px", component: "bento9", imageUrl: "", pageName: "design" },
+  { id: "10", dimension:"275px*240px", component: "bento10", imageUrl: "", pageName: "design" },
+  { id: "11", dimension:"290px*240px", component: "bento11", imageUrl: "", pageName: "design" },
 ];
 
 const ManageDesigns = () => {
   const [mode, setMode] = useState("table");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(staticBentos);
   const [editingItem, setEditingItem] = useState(null);
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${api_url}/api/image/getByPage/design`, {
+        withCredentials: true,
+      });
+
+      const fetched = res.data.data || [];
+
+      // Merge static list with fetched data
+      const merged = staticBentos.map(bento => {
+        const match = fetched.find(f => f.component === bento.component);
+        return match ? { ...bento, ...match } : bento;
+      });
+
+      setData(merged);
+    } catch (error) {
+      console.error("Failed to fetch designs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const res = await axios.get(`${api_url}/api/image/getByPage/design`, {
-          withCredentials: true,
-        });
-        setData(res.data.data || []);
-        // console.log(res.data.data);
-      } catch (error) {
-        console.error("Failed to fetch gallery:", error);
-      }
-      finally {
-      setLoading(false); // Stop loader
-    }
-    };
-
     fetchData();
   }, []);
 
-  // Submit handler
   const handleSubmit = async (form) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("pageName", form.pageName);
@@ -50,156 +62,102 @@ const ManageDesigns = () => {
         formData.append("image", form.image);
       }
 
-      if (mode === "add") {
-        await axios.post(`${api_url}/api/image`, formData, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } else if (mode === "edit" && editingItem?.id) {
-        console.log(editingItem);
-
+      if (editingItem?.id && editingItem.imageUrl) {
+        // Existing record → update
         await axios.put(`${api_url}/api/image/${editingItem.id}`, formData, {
           withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        // New record → create
+        await axios.post(`${api_url}/api/image`, formData, {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
         });
       }
 
-      // Refresh gallery list
-      const res = await axios.get(`${api_url}/api/image/getByPage/design`, {
-        withCredentials: true,
-      });
-      setData(res.data.data || []);
+      await fetchData();
       setMode("table");
       setEditingItem(null);
     } catch (error) {
       console.error("Submit error:", error);
-    }
-    finally {
-      setLoading(false); // Stop loader
+    } finally {
+      setLoading(false);
     }
   };
-  // const handleToggleActive = async (item) => {
-  //   try {
-  //     console.log(item);
-      
-  //     const updatedIsActive = !item.isActive;
-
-  //     await axios.put(
-  //       `${api_url}/api/image/${item.id}`,
-  //       { isActive: updatedIsActive },
-  //       { withCredentials: true }
-  //     );
-
-  //     // Update local state only if successful
-  //     setData((prev) =>
-  //       prev.map((d) =>
-  //         d.id === item.id ? { ...d, isActive: updatedIsActive } : d
-  //       )
-  //     );
-  //   } catch (error) {
-  //     console.error("Failed to update isActive status:", error);
-  //     alert("Error updating status. Try again.");
-  //   }
-  // };
-
-  // Delete handler
-  // const handleDelete = async (id) => {
-  //   if (window.confirm("Are you sure you want to delete this Image?")) {
-  //     try {
-  //       await axios.delete(`${api_url}/api/image/${id}`, {
-  //         withCredentials: true,
-  //       });
-  //       setData((prev) => prev.filter((item) => item.id !== id));
-  //     } catch (error) {
-  //       console.error("Delete error:", error);
-  //     }
-  //   }
-  // };
 
   if (loading) {
     return (
       <div className="bg-white flex flex-col items-center justify-center h-64 gap-2">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-opacity-100"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black"></div>
         <p className="text-sm text-black">Loading Designs...</p>
       </div>
     );
   }
+
   return (
-    <div className="bg-[#D6D6D6] flex  justify-center p-4">
+    <div className="bg-[#D6D6D6] flex justify-center p-4">
       <div className="w-full max-w-6xl rounded-md shadow-lg overflow-hidden bg-white">
-        {/* Header */}
         <div className="bg-[#383D34] text-white flex justify-between items-center px-6 py-2">
-          <h2 className="text-lg font-medium">Manage Gallery</h2>
-          {mode === "table" && (
-            <button
-              onClick={() => setMode("add")}
-              className="bg-white text-black px-4 py-2 text-sm rounded shadow inline-flex items-center gap-2 hover:bg-gray-200"
-            >
-              <Plus size={16} /> Add New Record
-            </button>
-          )}
+          <h2 className="text-lg font-medium">Manage Designs</h2>
         </div>
 
-        {/* Content */}
-        <div className="">
-          {mode === "table" && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-white text-sm text-black">
-                    <th className="border p-3 font-semibold">Id</th>
-                    <th className="border p-3 font-semibold">Image</th>
-                    <th className="border p-3 font-semibold">Component</th>
-                    <th className="border p-3 font-semibold">Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50 text-sm">
-                      <td className="border p-3">{item.id}</td>
-                      <td className="border p-3">
+        {mode === "table" && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-white text-sm text-black">
+                  <th className="border p-3 font-semibold">Dimension</th>
+                  <th className="border p-3 font-semibold">Component</th>
+                  <th className="border p-3 font-semibold">Image</th>
+                  <th className="border p-3 font-semibold">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item) => (
+                  <tr key={item.component} className="hover:bg-gray-50 text-sm">
+                    <td className="border p-3">{item.dimension}</td>
+                    <td className="border p-3">{item.component}</td>
+                    <td className="border p-3">
+                      {item.imageUrl ? (
                         <img
                           src={item.imageUrl}
-                          alt="uploaded"
+                          alt={item.component}
                           className="w-24 h-16 object-cover rounded"
                         />
-                      </td>
-                      <td className="border p-3">{item.component}</td>
-                      <td className="border p-3 text-center">
-                        <button
-                          onClick={() => {
-                            setEditingItem(item);
-                            setMode("edit");
-                            console.log(item.id);
-                          }}
-                          className="hover:text-blue-600"
-                        >
-                          <FiEdit className='text-black w-5 h-5' size={22} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                      ) : (
+                        <span className="text-gray-400 italic">No Image</span>
+                      )}
+                    </td>
+                    <td className="border p-3 text-center">
+                      <button
+                        onClick={() => {
+                          setEditingItem(item);
+                          setMode("edit");
+                        }}
+                        className="hover:text-blue-600"
+                      >
+                        <FiEdit className="text-black w-5 h-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-          {(mode === "add" || mode === "edit") && (
-            <DesignForm
-              mode={mode}
-              item={editingItem}
-              onCancel={() => {
-                setMode("table");
-                setEditingItem(null);
-              }}
-              onSubmit={handleSubmit}
-            />
-          )}
-        </div>
+        {(mode === "edit") && (
+          <DesignForm
+            mode={mode}
+            item={editingItem}
+            onCancel={() => {
+              setMode("table");
+              setEditingItem(null);
+            }}
+            onSubmit={handleSubmit}
+          />
+        )}
       </div>
     </div>
   );

@@ -185,7 +185,7 @@ const ManageProjects = () => {
                       />
                     </td>
                     <td className="border p-3 text-center">
-                      <FiXSquare
+                      <FiXSquare 
                         onClick={() => handleDelete(item.id)}
                         className="text-black cursor-pointer"
                         size={20}

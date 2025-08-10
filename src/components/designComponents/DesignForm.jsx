@@ -88,7 +88,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           type="text"
           name="component"
           value={formData.component}
-          onChange={handleChange}
+          // onChange={handleChange}
           className="border px-3 py-2 w-full rounded bg-white text-black"
         />
       </div>

@@ -47,14 +47,26 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   useEffect(() => {
     if (formData.thumbnail && typeof formData.thumbnail === "string") {
       getImageDimensions(formData.thumbnail).then(setThumbnailDim);
-    }
+    }else if (formData.thumbnail && formData.thumbnail instanceof File) {
+        const objectUrl = URL.createObjectURL(formData.thumbnail);
+        getImageDimensions(objectUrl).then(dim => {
+          setThumbnailDim(dim);
+          URL.revokeObjectURL(objectUrl);
+        });
+      }
   }, [formData.thumbnail]);
 
   // Watch main image and get dimensions
   useEffect(() => {
     if (formData.mainImage && typeof formData.mainImage === "string") {
       getImageDimensions(formData.mainImage).then(setMainImageDim);
-    }
+    }else if (formData.mainImage && formData.mainImage instanceof File) {
+        const objectUrl = URL.createObjectURL(formData.mainImage);
+        getImageDimensions(objectUrl).then(dim => {
+          setMainImageDim(dim);
+          URL.revokeObjectURL(objectUrl);
+        });
+      }
   }, [formData.mainImage]);
 
   const handleChange = (e) => {
@@ -119,10 +131,10 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           <input
             type="text"
             name="slug_url"
-            value={formData.slug_url}
+            value={formData.slug_url} 
             onChange={handleChange}
             className="border px-3 py-2 w-full rounded"
-            required
+            // required
           />
         </div>
         <div>
@@ -133,7 +145,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             value={formData.slug_keywords}
             onChange={handleChange}
             className="border px-3 py-2 w-full rounded"
-            required
+            // required
           />
         </div>
       </div>
@@ -183,7 +195,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           {formData.thumbnail && (
             <div className="mt-2">
               <img
-                src={`${formData.thumbnail}`}
+              src={typeof formData.thumbnail === "string" ? formData.thumbnail : URL.createObjectURL(formData.thumbnail)}
                 alt="thumbnail"
                 className="h-40 w-40 object-cover"
               />
@@ -207,7 +219,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           {formData.mainImage && (
             <div className="mt-2">
               <img
-                src={`${formData.mainImage}`}
+              src={typeof formData.mainImage === "string" ? formData.mainImage : URL.createObjectURL(formData.mainImage)}
                 alt="mainImage"
                 className="h-40 w-40 object-cover"
               />
