@@ -138,7 +138,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           />
         </div>
         <div>
-          <label className="block font-medium">Slug Keywords</label>
+          <label className="block font-medium">SEO Keywords</label>
           <input
             type="text"
             name="slug_keywords"
