@@ -58,7 +58,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4">
       <div>
-        <label className="block font-medium">Image</label>
+        <label className="block font-medium mb-1">Image</label>
         <input
           type="file"
           name="image"
@@ -83,7 +83,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
       </div>
 
       <div>
-        <label className="block font-medium">Component</label>
+        <label className="block font-medium mb-1">Component</label>
         <input
           type="text"
           name="component"
@@ -99,7 +99,7 @@ const DesignForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           onClick={onCancel}
           className="px-4 py-2 border rounded"
         >
-          Close Form
+          Close Form 
         </button>
         <button
           type="submit"

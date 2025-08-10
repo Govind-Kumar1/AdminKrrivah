@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
-import GalleryForm from "./GalleryForm";
 import axios from "axios";
 import { FiEdit, FiXSquare } from "react-icons/fi";
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { Pencil, X, Plus, Loader2 } from "lucide-react";
+import GalleryForm from "./GalleryForm"; // Assuming this component exists
+import api from "../../services/api.js"; // Import the generic api instance with corrected path
 
-const initialData = [
-  {
-    id: "123456789",
-    image: "hero image",
-    isActive: false,
-  },
-];
-
-const ManageGallery = () => {
+const ManageGallery = () => { 
   const [mode, setMode] = useState("table");
   const [data, setData] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
@@ -26,7 +19,7 @@ const ManageGallery = () => {
         const res = await axios.get(`${api_url}/api/image/getByPage/home`, {
           withCredentials: true,
         });
-        setData(res.data.data || []);
+        setData(res.data.data || []); 
         // console.log(res.data.data);
       } catch (error) {
         console.error("Failed to fetch gallery:", error);
@@ -36,7 +29,7 @@ const ManageGallery = () => {
     };
 
     fetchData();
-  }, []);
+  }, []); 
 
   // Submit handler
   const handleSubmit = async (form) => {
@@ -51,7 +44,7 @@ const ManageGallery = () => {
 
       if (mode === "add") {
         await axios.post(`${api_url}/api/image`, formData, {
-          withCredentials: true,
+          withCredentials: true, 
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -137,10 +130,13 @@ const ManageGallery = () => {
           <h2 className="text-lg font-medium">Manage Gallery</h2>
           {mode === "table" && (
             <button
-              onClick={() => setMode("add")}
-              className="bg-white text-black px-4 py-2 text-sm rounded shadow inline-flex items-center gap-2 hover:bg-gray-200"
+              onClick={() => {
+                setMode("add");
+                setEditingItem(null);
+              }}
+              className="bg-white text-black px-4 py-2 text-sm rounded shadow inline-flex items-center gap-2 hover:bg-gray-200 transition-colors"
             >
-              <Plus size={16} /> Add New Record
+              <Plus size={16} /> Add New Image
             </button>
           )}
         </div>

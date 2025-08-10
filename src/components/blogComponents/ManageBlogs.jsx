@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { FiEdit, FiXSquare } from "react-icons/fi";
 import axios from "axios";
-import BlogForm from "./BlogForm";
+import BlogForm from "./BlogForm.jsx";
 
 const api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 

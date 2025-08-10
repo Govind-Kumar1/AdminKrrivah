@@ -79,7 +79,6 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           </div>
         )}
 
-      </div>
 
       <div className="flex justify-between mt-6">
         <button
@@ -95,6 +94,7 @@ const GalleryForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         >
           Submit
         </button>
+      </div>
       </div>
     </form>
   );

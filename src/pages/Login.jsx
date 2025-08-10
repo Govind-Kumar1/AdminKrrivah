@@ -53,9 +53,9 @@ const LoginPage = () => {
 
     return (
         <div className="min-h-screen flex">
-            {/* Left Section - Image Background */}
+            {/* Left Section - Image Background */} 
             <div
-                className="relative hidden lg:block w-3/5 bg-cover bg-center"
+                className="relative lg:block w-3/5 bg-cover bg-center"
                 style={{ backgroundImage: "url('/pic2.png')" }}
             >
                 <div className="absolute top-8 left-8">

@@ -77,7 +77,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => { 
     e.preventDefault();
     onSubmit(formData);
   };
@@ -249,7 +249,7 @@ const BlogForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         </button>
       </div>
     </form>
-  );
+  ); 
 };
 
-export default BlogForm;
+export default BlogForm; 
