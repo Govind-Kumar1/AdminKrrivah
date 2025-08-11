@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
     // State to hold form data (username and password)
@@ -23,7 +24,6 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission
         setLoading(true);
-        setError(''); // Clear previous errors
 
         try { 
             // API endpoint for login
@@ -35,7 +35,7 @@ const LoginPage = () => {
             });
 
             // If login is successful
-            console.log('Login successful:', response.data);
+            // console.log('Login successful:', response.data);
             setLoading(false);
             
             // Redirect to the admin dashboard or another protected page
@@ -45,7 +45,7 @@ const LoginPage = () => {
             // Handle login errors
             setLoading(false);
             const errorMessage = err.response?.data?.message || 'Login failed. Please check your credentials.';
-            setError(errorMessage);
+            toast.error(errorMessage); // Display error message using toast
             console.error('Login error:', err);
         }
     };

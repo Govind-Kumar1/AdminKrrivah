@@ -8,6 +8,7 @@ import DesignPage from './pages/DesignPage'
 import StatisticsPage from './pages/StatisticsPage'
 import BannerPage from './pages/BannerPage'
 import GalleryPage from './pages/GalleryPage'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
           <Route path={'/admin/banner'} element={<BannerPage/>} />
           <Route path={'/admin/gallery'} element={<GalleryPage/>} />
         </Routes>
+        <ToastContainer position="top-right" autoClose={1500} />
       </Router>
     </>
   )
