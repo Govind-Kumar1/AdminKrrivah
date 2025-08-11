@@ -21,8 +21,6 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
   useEffect(() => {
     if (mode === "edit" && item) {
-      console.log(item);
-
       setFormData({
         title: item.title || "",
         category: item.category || "",
@@ -41,36 +39,37 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             )?.listings?.join(", ") || "",
         },
         thumbnail: item.thumbnail, // handled separately in submit
-        brochure: null,
-        images: [],
+        brochure: item.Brochure,
+        isActive: item.isActive || false,
+        images: item.images,
       });
     }
   }, [item, mode]);
 
-    const [thumbnailDim, setThumbnailDim] = useState(null);
+  const [thumbnailDim, setThumbnailDim] = useState(null);
   // Function to get image dimensions
-    const getImageDimensions = (url) => {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () =>
-          resolve({ width: img.naturalWidth, height: img.naturalHeight });
-        img.onerror = reject;
+  const getImageDimensions = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () =>
+        resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = reject;
+    });
+  };
+
+  // Watch thumbnail and get dimensions
+  useEffect(() => {
+    if (formData.thumbnail && typeof formData.thumbnail === "string") {
+      getImageDimensions(formData.thumbnail).then(setThumbnailDim);
+    } else if (formData.thumbnail && formData.thumbnail instanceof File) {
+      const objectUrl = URL.createObjectURL(formData.thumbnail);
+      getImageDimensions(objectUrl).then((dim) => {
+        setThumbnailDim(dim);
+        URL.revokeObjectURL(objectUrl);
       });
-    };
-  
-    // Watch thumbnail and get dimensions
-    useEffect(() => {
-      if (formData.thumbnail && typeof formData.thumbnail === "string") {
-        getImageDimensions(formData.thumbnail).then(setThumbnailDim);
-      }else if (formData.thumbnail && formData.thumbnail instanceof File) {
-          const objectUrl = URL.createObjectURL(formData.thumbnail);
-          getImageDimensions(objectUrl).then(dim => {
-            setThumbnailDim(dim);
-            URL.revokeObjectURL(objectUrl);
-          });
-        }
-    }, [formData.thumbnail]);
+    }
+  }, [formData.thumbnail]);
 
   const handleChange = (e) => {
     const { name, value, files, dataset } = e.target;
@@ -81,6 +80,11 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
         setFormData((prev) => ({
           ...prev,
           images: [...prev.images, ...img].slice(0, 10),
+        }));
+      } else if (name === "thumbnail") {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: files[0],
         }));
       } else {
         setFormData((prev) => ({
@@ -106,7 +110,6 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const preparedData = {
       ...formData,
       Amenities: {
@@ -195,19 +198,23 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
           className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
         />
         {formData.thumbnail && (
-            <div className="mt-2">
-              <img
-              src={typeof formData.thumbnail === "string" ? formData.thumbnail : URL.createObjectURL(formData.thumbnail)}
-                alt="thumbnail"
-                className="h-40 w-40 object-cover"
-              />
-              {thumbnailDim && (
-                <p className="text-sm text-gray-500 mt-1">
-                  {thumbnailDim.width} × {thumbnailDim.height} px
-                </p>
-              )}
-            </div>
-          )}
+          <div className="mt-2">
+            <img
+              src={
+                typeof formData.thumbnail === "string"
+                  ? formData.thumbnail
+                  : URL.createObjectURL(formData.thumbnail)
+              }
+              alt="thumbnail"
+              className="h-40 w-40 object-cover"
+            />
+            {thumbnailDim && (
+              <p className="text-sm text-gray-500 mt-1">
+                {thumbnailDim.width} × {thumbnailDim.height} px
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <div>
@@ -262,6 +269,23 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             accept="image/*"
             className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
           />
+          {formData.images.length > 0 && (
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              {formData.images.map((imag, index) => (
+                <div key={index} className="col-span-1">
+                  <img
+                    src={
+                      typeof imag === "string"
+                        ? imag
+                        : URL.createObjectURL(imag)
+                    }
+                    alt="images"
+                    className="h-40 w-40 object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
@@ -276,6 +300,15 @@ const ProjectForm = ({ mode, item = {}, onCancel, onSubmit }) => {
             accept="application/pdf"
             className="border px-3 py-2 w-full rounded bg-[#383D34] text-white"
           />
+          {formData.brochure && (
+            <a
+              href={formData.brochure}
+              target="_blank"
+              className="text-blue-700"
+            >
+              Uploaded brochure
+            </a>
+          )}
         </div>
       </div>
 

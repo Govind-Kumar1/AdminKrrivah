@@ -17,6 +17,7 @@ const ManageProjects = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
+
       const res = await axios.get(`${api_url}/api/project`, {
         withCredentials: true,
       });
@@ -55,17 +56,25 @@ const ManageProjects = () => {
 
       // Append fields properly
       Object.entries(formData).forEach(([key, value]) => {
-        
         if (key === "Amenities") {
           fd.append("amenities", JSON.stringify(value));
         } else if (key === "images" && Array.isArray(value)) {
-          value.forEach((img) => fd.append("images", img));
+          value.forEach((img) => {
+            if (img instanceof File) {
+              fd.append("images", img);
+            }
+          });
         } else if ((key === "thumbnail" || key === "brochure") && value) {
-          fd.append(key, value);
-        } else if (typeof value !== "object") {
-          fd.append(key, value);
+          if (value instanceof File) {
+            fd.set(key, value); // overwrite if reselected
+          }
+        } else if (
+          value !== null &&
+          value !== undefined &&
+          typeof value !== "object"
+        ) {
+          fd.set(key, value);
         }
-        
       });
 
       if (mode === "add") {
@@ -84,6 +93,7 @@ const ManageProjects = () => {
       setMode("table");
       setEditingItem(null);
     } catch (err) {
+      console.error(err);
       alert("Failed to submit project.");
     } finally {
       setLoading(false);
@@ -185,7 +195,7 @@ const ManageProjects = () => {
                       />
                     </td>
                     <td className="border p-3 text-center">
-                      <FiXSquare 
+                      <FiXSquare
                         onClick={() => handleDelete(item.id)}
                         className="text-black cursor-pointer"
                         size={20}
